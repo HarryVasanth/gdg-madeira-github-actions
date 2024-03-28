@@ -3,7 +3,7 @@ name: 💄 Format - Prettier
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions: write-all
 
