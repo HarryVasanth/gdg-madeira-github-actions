@@ -1,0 +1,1 @@
+[![🎲 Random Choice](https://github.com/HarryVasanth/gdg-madeira-github-actions/actions/workflows/random-choice.yml/badge.svg)](https://github.com/HarryVasanth/gdg-madeira-github-actions/actions/workflows/random-choice.yml)
