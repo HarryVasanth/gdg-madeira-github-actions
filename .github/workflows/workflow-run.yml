@@ -1,0 +1,30 @@
+name: 📣 Notify - CI Finished
+
+on:
+  workflow_run:
+    workflows: ["✅ CI"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  report:
+    name: 📣 Report CI result
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📣 Publish summary
+        env:
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          {
+            echo "### 📣 CI finished: $CONCLUSION"
+            echo
+            echo "- branch: \`$BRANCH\`"
+            echo "- commit: \`$SHA\`"
+            echo "- run: $RUN_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
