@@ -1,0 +1,42 @@
+name: 🏷️ Issues - Triage
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    name: 🏷️ Welcome and triage
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏷️ Comment on new issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue
+            const text = `${issue.title}\n${issue.body ?? ''}`.toLowerCase()
+
+            const hints = []
+            if (/bug|error|crash|fail/.test(text)) hints.push('a **bug**')
+            if (/docs?|readme|typo/.test(text)) hints.push('a **documentation** issue')
+            if (/new|feature|request|idea/.test(text)) hints.push('a **feature request**')
+
+            const lines = [
+              'Thanks for opening this issue! 👋',
+              '',
+              'A maintainer will take a look soon.',
+            ]
+            if (hints.length > 0) {
+              lines.push('', `Automated triage: this looks like ${hints.join(', ')}.`)
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: lines.join('\n'),
+            })

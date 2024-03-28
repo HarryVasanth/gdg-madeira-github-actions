@@ -1,0 +1,35 @@
+name: ⏰ Scheduled Draw
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  draw:
+    name: ⏰ Daily draw
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: ⚙️ Flip a coin
+        id: draw
+        uses: ./.github/actions/run-script
+        with:
+          script: coin
+
+      - name: 📝 Publish result
+        env:
+          RESULT: ${{ steps.draw.outputs.result }}
+        run: |
+          {
+            echo "### ⏰ Today's coin flip"
+            echo
+            echo "\`$RESULT\`"
+          } >> "$GITHUB_STEP_SUMMARY"

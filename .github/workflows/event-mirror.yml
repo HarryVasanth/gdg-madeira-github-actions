@@ -1,0 +1,59 @@
+name: 🪞 Event Mirror
+
+# One workflow, many triggers: the cheapest way to see what each event carries.
+# `check_run`/`check_suite` are intentionally absent (they would re-trigger on
+# this workflow's own checks), as is `pull_request_target` (see SECURITY.md).
+on:
+  create:
+  delete:
+  discussion:
+  discussion_comment:
+  fork:
+  gollum:
+  issue_comment:
+  label:
+  merge_group:
+  milestone:
+  public:
+  pull_request_review:
+  pull_request_review_comment:
+  registry_package:
+  release:
+    types: [published]
+  repository_dispatch:
+    types: [demo]
+  status:
+  watch:
+    types: [started]
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    name: 🪞 Echo event
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🪞 Print event metadata
+        env:
+          EVENT: ${{ github.event_name }}
+          ACTION: ${{ github.event.action }}
+          ACTOR: ${{ github.actor }}
+          REF: ${{ github.ref }}
+          PAYLOAD_KEYS: ${{ toJSON(github.event) }}
+        run: |
+          {
+            echo "### 🪞 $EVENT"
+            echo
+            echo "- action: \`${ACTION:-none}\`"
+            echo "- actor: \`$ACTOR\`"
+            echo "- ref: \`$REF\`"
+            echo
+            echo "<details><summary>payload</summary>"
+            echo
+            echo '```json'
+            echo "$PAYLOAD_KEYS"
+            echo '```'
+            echo
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
