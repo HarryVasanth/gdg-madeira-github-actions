@@ -1,0 +1,37 @@
+name: Run random script
+description: Runs one of the scripts in scripts/random and exposes its output.
+
+inputs:
+  script:
+    description: One of card, dice or coin.
+    required: true
+
+outputs:
+  result:
+    description: The script output.
+    value: ${{ steps.run.outputs.result }}
+
+runs:
+  using: composite
+  steps:
+    - name: Validate and run
+      id: run
+      shell: bash
+      env:
+        SCRIPT: ${{ inputs.script }}
+      run: |
+        set -euo pipefail
+        case "$SCRIPT" in
+          card | dice | coin) ;;
+          *)
+            echo "::error::unknown script '$SCRIPT'"
+            exit 1
+            ;;
+        esac
+        result="$(bash "scripts/random/${SCRIPT}.sh")"
+        printf '%s\n' "$result"
+        {
+          echo 'result<<SCRIPT_OUTPUT_EOF'
+          printf '%s\n' "$result"
+          echo 'SCRIPT_OUTPUT_EOF'
+        } >> "$GITHUB_OUTPUT"

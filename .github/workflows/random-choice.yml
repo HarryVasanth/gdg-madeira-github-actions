@@ -1,0 +1,42 @@
+name: 🎲 Random Choice
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: What should we draw?
+        type: choice
+        default: card
+        options: [card, dice, coin]
+
+permissions:
+  contents: read
+
+jobs:
+  draw:
+    name: 🎲 Random draw
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: ⚙️ Run script
+        id: draw
+        uses: ./.github/actions/run-script
+        with:
+          script: ${{ inputs.script }}
+
+      - name: 📝 Publish result
+        env:
+          SCRIPT_NAME: ${{ inputs.script }}
+          RESULT: ${{ steps.draw.outputs.result }}
+        run: |
+          {
+            echo "### 🎲 Random choice: $SCRIPT_NAME"
+            echo
+            echo '```'
+            printf '%s\n' "$RESULT"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
