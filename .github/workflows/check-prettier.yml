@@ -1,0 +1,30 @@
+name: 💅 Check - Prettier
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+
+    types: [opened, reopened, synchronize]
+
+jobs:
+  GA-Misc-Check-Prettier:
+    name: 💅 Run Prettier
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🐧 Check out repository code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Get all changed YAML/MD/JSON/HTML/CSS files
+        id: changed-file-list
+        run: |
+          echo "changed_files=$(git diff --name-only --merge-base origin/master | grep -E "\.(yaml|yml|md|json|html|css)$" | xargs)" >> $GITHUB_OUTPUT
+
+      - name: 🧙‍♂️ Run Format checks
+        if: steps.changed-file-list.outputs.changed_files != ''
+        run: |
+          npm i -g prettier
+          npx prettier -c ${{ steps.changed-file-list.outputs.changed_files }}
