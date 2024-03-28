@@ -1,0 +1,44 @@
+name: 📚 Docs - GitHub Pages
+
+# Set Settings > Pages > Source to GitHub Actions before you run this workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 📦 Build artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: ⚙️ Configure Pages
+        uses: actions/configure-pages@v4
+
+      - name: 📦 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    name: 🚀 Deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: 🚀 Deploy to Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
