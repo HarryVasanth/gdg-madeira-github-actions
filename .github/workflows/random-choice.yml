@@ -1,0 +1,30 @@
+name: 🎲 Random Choice
+on:
+  workflow_dispatch:
+    inputs:
+      random-choice:
+        type: choice
+        description: What is your choice?
+        options: 
+        - Pick a Card
+        - Roll a Die
+
+jobs:
+  run:
+    name: 🎲 Running Choice
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: ⬇ Checkout
+        uses: actions/checkout@v4
+        
+      - name: ⚙️ Executing
+        run: |
+          if [[ "${{ github.event.inputs.random-choice }}" == 'Pick a Card' ]]; then
+            ./scripts/random/card.sh
+          elif [[ "${{ github.event.inputs.random-choice }}" == 'Roll a Die' ]]; then
+            ./scripts/random/dice.sh
+          else
+            echo "Invalid option selected"
+            exit 1
+          fi
