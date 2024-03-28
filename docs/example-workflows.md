@@ -1,6 +1,5 @@
-
-
 1. ✅ Continuous Integration (CI):
+
    - **Use Case**: Web Application Development
    - **Trigger**: Push to the `develop` branch
    - **Steps**:
@@ -13,6 +12,7 @@
      7. Notify developers of the build status via Slack or email.
 
 2. 📦 Continuous Deployment (CD):
+
    - **Use Case**: Deploying a Node.js Application to AWS Lambda
    - **Trigger**: Successful CI build on the `master` branch
    - **Steps**:
@@ -23,6 +23,7 @@
      5. Send deployment status notification to team members via Slack or email.
 
 3. 🔍 Code Quality Checks:
+
    - **Use Case**: Python Web Application Development
    - **Trigger**: Pull request creation or push to specific branches (e.g., `feature` branches)
    - **Steps**:
@@ -34,6 +35,7 @@
      6. Generate a report on code quality metrics and send it as a comment on the pull request.
 
 4. 🧪 Automated Testing:
+
    - **Use Case**: Mobile Application Development (iOS)
    - **Trigger**: Pull request creation or push to specific branches (e.g., `feature` branches)
    - **Steps**:
