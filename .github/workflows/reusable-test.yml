@@ -1,0 +1,47 @@
+name: 🧪 Reusable - Test
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        description: Runner image to test on.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: 🧪 Check on ${{ inputs.os }}
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: ⬇️ Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 💅 Check formatting
+        run: npx --yes prettier@3.2.5 --check .
+
+      - name: 🐚 Lint shell scripts
+        run: shellcheck scripts/random/*.sh scripts/test/*.sh
+
+      - name: 🧪 Run smoke tests
+        shell: bash
+        run: |
+          set -o pipefail
+          bash scripts/test/smoke.sh | tee smoke-output.txt
+
+      - name: 📦 Upload smoke output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-output-${{ inputs.os }}
+          path: smoke-output.txt
+          retention-days: 7

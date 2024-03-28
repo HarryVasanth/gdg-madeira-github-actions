@@ -1,0 +1,42 @@
+name: ✅ CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: 🧪 Test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    uses: ./.github/workflows/reusable-test.yml
+    with:
+      os: ${{ matrix.os }}
+
+  summary:
+    name: 📝 Summary
+    needs: [test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📝 Write job summary
+        env:
+          RESULT: ${{ needs.test.result }}
+          COMMIT: ${{ github.sha }}
+        run: |
+          {
+            echo "### ✅ CI: $RESULT"
+            echo
+            echo "Commit: \`$COMMIT\`"
+          } >> "$GITHUB_STEP_SUMMARY"
