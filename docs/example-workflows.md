@@ -1,11 +1,7 @@
 1. ✅ Continuous Integration (CI):
 
-
-
-
    - **Use Case**: Web Application Development
    - **Trigger**: Push to the `develop` branch
-     
    - **Steps**:
      1. Checkout code from the repository.
      2. Install dependencies using npm/yarn.
