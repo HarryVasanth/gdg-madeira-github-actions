@@ -1,0 +1,25 @@
+name: 💄 Format - Prettier
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: write-all
+
+jobs:
+  format-codebase:
+    name: 💄 Format Codebase with Prettier
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📀 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 💄 Run Prettier
+        uses: creyD/prettier_action@v4.3
+        with:
+          prettier_options: --write **/*.{json,md}
+          commit_message: "chore(codebase): format with prettier"
